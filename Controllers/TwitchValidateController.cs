@@ -10,19 +10,19 @@ using Twitchbot.Base.Models;
 namespace Twitchbot.Authentication.Controllers
 {
     [Route("api/Authentication")]
-    public class ValidateController : ControllerBase
+    public class TwitchValidateController : ControllerBase
     {
-        private readonly ILogger<ValidateController> _logger;
-        private readonly ValidateBusiness _validateBusiness;
+        private readonly ILogger<TwitchValidateController> _logger;
+        private readonly TwitchValidateBusiness _validateBusiness;
 
-        public ValidateController(ILogger<ValidateController> logger,
-            ValidateBusiness validateBusiness)
+        public TwitchValidateController(ILogger<TwitchValidateController> logger,
+            TwitchValidateBusiness validateBusiness)
         {
             _logger = logger;
             _validateBusiness = validateBusiness;
         }
 
-        [HttpGet("/validate")]
+        [HttpGet("/twitch/validate")]
         public async Task<ActionResult<HttpResultModel<AuthenticationModel>>> Get(CancellationToken cancellationToken, string clientId)
         {
             _logger.LogDebug("Get validate authentication");

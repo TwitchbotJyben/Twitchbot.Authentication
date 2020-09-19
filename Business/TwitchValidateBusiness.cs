@@ -15,23 +15,23 @@ using Twitchbot.Models.Domain.Models;
 
 namespace Twitchbot.Authentication.Business
 {
-    public class ValidateBusiness
+    public class TwitchValidateBusiness
     {
         private readonly ClientBase _client;
         private readonly IConfiguration _configuration;
-        private readonly ILogger<ValidateBusiness> _logger;
+        private readonly ILogger<TwitchValidateBusiness> _logger;
         private readonly string _clientId;
         private readonly string _secretId;
-        private readonly IStringLocalizer<ValidateBusiness> _localizer;
+        private readonly IStringLocalizer<TwitchValidateBusiness> _localizer;
         private readonly TwitchDao _twitchDao;
 
-        public ValidateBusiness(IConfiguration configuration, ILogger<ValidateBusiness> logger, ClientBase clientBase,
-            IStringLocalizer<ValidateBusiness> localizer, TwitchDao twitchDao)
+        public TwitchValidateBusiness(IConfiguration configuration, ILogger<TwitchValidateBusiness> logger, ClientBase clientBase,
+            IStringLocalizer<TwitchValidateBusiness> localizer, TwitchDao twitchDao)
         {
             _configuration = configuration;
             _logger = logger;
-            _clientId = _configuration["TwitchClientId"];
-            _secretId = _configuration["TwitchSecretId"];
+            _clientId = _configuration["ApiParams:Twitch:ClientId"];
+            _secretId = _configuration["ApiParams:Twitch:SecretId"];
             _client = clientBase;
             _localizer = localizer;
             _twitchDao = twitchDao;
@@ -116,8 +116,8 @@ namespace Twitchbot.Authentication.Business
         {
             _logger.LogInformation("Refresh du token {0}", refreshToken);
 
-            var url = _configuration["Url:Twitch:RefreshToken"].Replace("{refreshToken}", refreshToken).Replace("{clientId}", _clientId).Replace("{secretId}", _secretId);
-            var result = await _client.PerformRequest<object, TwitchRefreshTokenModel>(url, HttpMethod.Post);
+            var url = _configuration["ApiUrl:Twitch:RefreshToken"].Replace("{refreshToken}", refreshToken).Replace("{clientId}", _clientId).Replace("{secretId}", _secretId);
+            var result = await _client.PerformRequest<TwitchRefreshTokenModel>(url, HttpMethod.Post);
 
             return result;
         }
@@ -126,9 +126,9 @@ namespace Twitchbot.Authentication.Business
         {
             _logger.LogInformation("Validation du token {0}", token);
 
-            var url = _configuration["Url:Twitch:ValidateToken"];
+            var url = _configuration["ApiUrl:Twitch:ValidateToken"];
             var headers = new Dictionary<string, string> { { "Authorization", token } };
-            var result = await _client.PerformRequest<object, TwitchValidateTokenModel>(url, HttpMethod.Get, null, headers);
+            var result = await _client.PerformRequest<TwitchValidateTokenModel>(url, HttpMethod.Get, null, headers);
 
             return result;
         }

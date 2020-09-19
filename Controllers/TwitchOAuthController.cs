@@ -9,19 +9,19 @@ using Twitchbot.Base.Models;
 namespace Twitchbot.Authentication.Controllers
 {
     [Route("api/Authentication")]
-    public class OAuthController : ControllerBase
+    public class TwitchOAuthController : ControllerBase
     {
-        private readonly ILogger<OAuthController> _logger;
-        private readonly OAuthBusiness _oAuthBusiness;
+        private readonly ILogger<TwitchOAuthController> _logger;
+        private readonly TwitchOAuthBusiness _oAuthBusiness;
 
-        public OAuthController(ILogger<OAuthController> logger,
-            OAuthBusiness oAuthBusiness)
+        public TwitchOAuthController(ILogger<TwitchOAuthController> logger,
+            TwitchOAuthBusiness oAuthBusiness)
         {
             _logger = logger;
             _oAuthBusiness = oAuthBusiness;
         }
 
-        [HttpGet("/oauth")]
+        [HttpGet("/twitch/oauth")]
         public async Task<ActionResult<HttpResultModel<AuthenticationModel>>> Get(CancellationToken cancellationToken, string code)
         {
             _logger.LogDebug("Get oauth");

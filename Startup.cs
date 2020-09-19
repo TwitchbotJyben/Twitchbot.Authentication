@@ -40,7 +40,7 @@ namespace Twitchbot.Authentication
             // sharing the user secret configuration file
             var connectionString = Configuration.GetConnectionString("twitchbot-dev");
 
-            services.AddDbContext<TwitchbotContext>(options => options.UseSqlServer(connectionString));
+            services.AddDbContext<TwitchbotContext>(options => options.UseNpgsql(connectionString));
 
             // register AutoMapper profiles
             services.AddAutoMapper(typeof(TwitchProfile));
@@ -52,13 +52,16 @@ namespace Twitchbot.Authentication
 
             services.AddLocalization(opts => { opts.ResourcesPath = "Resources"; });
 
-            services.AddScoped<ValidateController>();
-            services.AddScoped<ValidateBusiness>();
-            services.AddScoped<OAuthController>();
-            services.AddScoped<OAuthBusiness>();
+            services.AddScoped<TwitchValidateController>();
+            services.AddScoped<TwitchValidateBusiness>();
+            services.AddScoped<TwitchOAuthController>();
+            services.AddScoped<TwitchOAuthBusiness>();
+            services.AddScoped<SpotifyOAuthBusiness>();
+            services.AddScoped<SpotifyOAuthController>();
             services.AddScoped<ClientBase>();
             services.AddScoped<TwitchDao>();
             services.AddScoped<UsersDao>();
+            services.AddScoped<SpotifyDao>();
 
             // Register the Swagger generator
             services.AddSwaggerGen(c =>

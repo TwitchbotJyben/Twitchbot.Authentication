@@ -15,24 +15,24 @@ using Twitchbot.Models.Domain.Models;
 
 namespace Twitchbot.Authentication.Business
 {
-    public class OAuthBusiness
+    public class TwitchOAuthBusiness
     {
         private readonly ClientBase _client;
         private readonly IConfiguration _configuration;
-        private readonly ILogger<OAuthBusiness> _logger;
+        private readonly ILogger<TwitchOAuthBusiness> _logger;
         private readonly string _clientId;
         private readonly string _secretId;
-        private readonly IStringLocalizer<OAuthBusiness> _localizer;
+        private readonly IStringLocalizer<TwitchOAuthBusiness> _localizer;
         private readonly TwitchDao _twitchDao;
         private readonly UsersDao _usersDao;
 
-        public OAuthBusiness(IConfiguration configuration, ILogger<OAuthBusiness> logger, ClientBase clientBase,
-            IStringLocalizer<OAuthBusiness> localizer, TwitchDao twitchDao, UsersDao usersDao)
+        public TwitchOAuthBusiness(IConfiguration configuration, ILogger<TwitchOAuthBusiness> logger, ClientBase clientBase,
+            IStringLocalizer<TwitchOAuthBusiness> localizer, TwitchDao twitchDao, UsersDao usersDao)
         {
             _configuration = configuration;
             _logger = logger;
-            _clientId = _configuration["TwitchClientId"];
-            _secretId = _configuration["TwitchSecretId"];
+            _clientId = _configuration["ApiParams:Twitch:ClientId"];
+            _secretId = _configuration["ApiParams:Twitch:SecretId"];
             _client = clientBase;
             _localizer = localizer;
             _twitchDao = twitchDao;
@@ -127,8 +127,8 @@ namespace Twitchbot.Authentication.Business
         {
             _logger.LogInformation("Post OAuth {0}", code);
 
-            var url = _configuration["Url:Twitch:OAuth"].Replace("{code}", code).Replace("{clientId}", _clientId).Replace("{secretId}", _secretId).Replace("{redirect_url}", _configuration["RedirectUrl"]);
-            var result = await _client.PerformRequest<object, TwitchOAuthModel>(url, HttpMethod.Post);
+            var url = _configuration["ApiUrl:Twitch:OAuth"].Replace("{code}", code).Replace("{clientId}", _clientId).Replace("{secretId}", _secretId).Replace("{redirect_url}", _configuration["ApiParams:Twitch:RedirectUrl"]);
+            var result = await _client.PerformRequest<TwitchOAuthModel>(url, HttpMethod.Post);
 
             return result;
         }
@@ -137,9 +137,9 @@ namespace Twitchbot.Authentication.Business
         {
             _logger.LogInformation("Validation du token {0}", token);
 
-            var url = _configuration["Url:Twitch:ValidateToken"];
+            var url = _configuration["ApiUrl:Twitch:ValidateToken"];
             var headers = new Dictionary<string, string> { { "Authorization", token } };
-            var result = await _client.PerformRequest<object, TwitchValidateTokenModel>(url, HttpMethod.Get, null, headers);
+            var result = await _client.PerformRequest<TwitchValidateTokenModel>(url, HttpMethod.Get, null, headers);
 
             return result;
         }
