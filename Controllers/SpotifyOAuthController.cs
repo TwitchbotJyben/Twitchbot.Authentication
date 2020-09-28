@@ -5,6 +5,8 @@ using Microsoft.Extensions.Logging;
 using Twitchbot.Authentication.Business;
 using Twitchbot.Authentication.ModelsIn;
 using Twitchbot.Base.Models;
+using Twitchbot.Models.Domain.Models;
+using Twitchbot_Sample.Authentication.ModelsIn;
 
 namespace Twitchbot.Authentication.Controllers
 {
@@ -21,12 +23,20 @@ namespace Twitchbot.Authentication.Controllers
             _oAuthBusiness = oAuthBusiness;
         }
 
+        [HttpPost("/spotify/oauth")]
+        public async Task<ActionResult<HttpResultModel<AuthenticationModel>>> Post(CancellationToken cancellationToken, string code, string clientId)
+        {
+            _logger.LogDebug("Post oauth");
+
+            return await _oAuthBusiness.PostOAuth(code, clientId, cancellationToken);
+        }
+
         [HttpGet("/spotify/oauth")]
-        public async Task<ActionResult<HttpResultModel<AuthenticationModel>>> Get(CancellationToken cancellationToken, string code, string clientId)
+        public async Task<ActionResult<HttpResultModel<SpotifyModel>>> Get(CancellationToken cancellationToken, string clientId)
         {
             _logger.LogDebug("Get oauth");
 
-            return await _oAuthBusiness.GetOAuth(code, clientId, cancellationToken);
+            return await _oAuthBusiness.GetOAuth(clientId, cancellationToken);
         }
     }
 }

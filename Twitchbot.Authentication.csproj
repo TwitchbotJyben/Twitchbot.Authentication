@@ -16,6 +16,6 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.4.1" />
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="5.4.1" />
     <PackageReference Include="Twitchbot.Base" Version="1.0.6" />
-    <PackageReference Include="Twitchbot.Models" Version="1.0.7" />
+    <PackageReference Include="Twitchbot.Models" Version="1.0.8" />
   </ItemGroup>
 </Project>
