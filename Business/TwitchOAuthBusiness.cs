@@ -39,7 +39,7 @@ namespace Twitchbot.Authentication.Business
             _usersDao = usersDao;
         }
 
-        internal async Task<HttpResultModel<AuthenticationModel>> GetOAuth(string code, CancellationToken cancellationToken)
+        internal async Task<HttpResultModel<AuthenticationModel>> PostOAuth(string code, CancellationToken cancellationToken)
         {
             var resultAuthentication = new HttpResultModel<AuthenticationModel>();
 

@@ -21,12 +21,12 @@ namespace Twitchbot.Authentication.Controllers
             _oAuthBusiness = oAuthBusiness;
         }
 
-        [HttpGet("/twitch/oauth")]
-        public async Task<ActionResult<HttpResultModel<AuthenticationModel>>> Get(CancellationToken cancellationToken, string code)
+        [HttpPost("/twitch/oauth")]
+        public async Task<ActionResult<HttpResultModel<AuthenticationModel>>> Post(CancellationToken cancellationToken, string code)
         {
-            _logger.LogDebug("Get oauth");
+            _logger.LogDebug("Post oauth");
 
-            return await _oAuthBusiness.GetOAuth(code, cancellationToken);
+            return await _oAuthBusiness.PostOAuth(code, cancellationToken);
         }
     }
 }
