@@ -4,7 +4,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.ApplicationInsights;
 
-namespace Twitchbot.Authentication
+namespace Twitchbot.Services.Authentication
 {
     public class Program
     {

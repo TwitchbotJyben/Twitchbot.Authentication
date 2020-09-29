@@ -1,6 +1,6 @@
 using System.Runtime.Serialization;
 
-namespace Twitchbot.Authentication.ModelsOut
+namespace Twitchbot.Services.Authentication.ModelsOut
 {
     [DataContract]
     public class SpotifyTokenModel

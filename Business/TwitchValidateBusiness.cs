@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
-using Twitchbot.Authentication.Dao;
-using Twitchbot.Authentication.ModelsIn;
-using Twitchbot.Authentication.ModelsOut;
-using Twitchbot.Base.Client;
-using Twitchbot.Base.Models;
-using Twitchbot.Models.Domain.Models;
+using Twitchbot.Common.Base.Client;
+using Twitchbot.Common.Base.Models;
+using Twitchbot.Common.Models.Domain.Models;
+using Twitchbot.Services.Authentication.Dao;
+using Twitchbot.Services.Authentication.ModelsIn;
+using Twitchbot.Services.Authentication.ModelsOut;
 
-namespace Twitchbot.Authentication.Business
+namespace Twitchbot.Services.Authentication.Business
 {
     public class TwitchValidateBusiness
     {

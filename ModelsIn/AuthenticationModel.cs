@@ -1,6 +1,6 @@
 using System;
 
-namespace Twitchbot.Authentication.ModelsIn
+namespace Twitchbot.Services.Authentication.ModelsIn
 {
     public class AuthenticationModel
     {

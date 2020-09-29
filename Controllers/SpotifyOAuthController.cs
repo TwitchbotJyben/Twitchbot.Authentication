@@ -2,13 +2,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Twitchbot.Authentication.Business;
-using Twitchbot.Authentication.ModelsIn;
-using Twitchbot.Base.Models;
-using Twitchbot.Models.Domain.Models;
+using Twitchbot.Common.Base.Models;
+using Twitchbot.Services.Authentication.Business;
+using Twitchbot.Services.Authentication.ModelsIn;
 using Twitchbot_Sample.Authentication.ModelsIn;
 
-namespace Twitchbot.Authentication.Controllers
+namespace Twitchbot.Services.Authentication.Controllers
 {
     [Route("api/Authentication")]
     public class SpotifyOAuthController : ControllerBase

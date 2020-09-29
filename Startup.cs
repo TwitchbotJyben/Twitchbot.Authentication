@@ -12,15 +12,15 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
-using Twitchbot.Authentication.Business;
-using Twitchbot.Authentication.Controllers;
-using Twitchbot.Authentication.Dao;
-using Twitchbot.Base.Client;
-using Twitchbot.Base.Middleware;
-using Twitchbot.Models.Data;
-using Twitchbot.Models.Domain.Mapping;
+using Twitchbot.Common.Base.Client;
+using Twitchbot.Common.Base.Middleware;
+using Twitchbot.Common.Models.Data;
+using Twitchbot.Common.Models.Domain.Mapping;
+using Twitchbot.Services.Authentication.Business;
+using Twitchbot.Services.Authentication.Controllers;
+using Twitchbot.Services.Authentication.Dao;
 
-namespace Twitchbot.Authentication
+namespace Twitchbot.Services.Authentication
 {
     public class Startup
     {
@@ -66,7 +66,7 @@ namespace Twitchbot.Authentication
             // Register the Swagger generator
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Twitchbot.Authentication", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Twitchbot.Services.Authentication", Version = "v1" });
             });
 
             services.Configure<RequestLocalizationOptions>(
@@ -120,7 +120,7 @@ namespace Twitchbot.Authentication
             // Enable middleware to serve swagger-ui, specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Twitchbot.Authentication");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Twitchbot.Services.Authentication");
             });
 
             var options = app.ApplicationServices.GetService<IOptions<RequestLocalizationOptions>>();

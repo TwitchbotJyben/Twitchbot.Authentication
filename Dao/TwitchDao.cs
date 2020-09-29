@@ -1,10 +1,10 @@
 using AutoMapper;
-using Twitchbot.Base.Dao;
-using Twitchbot.Models.Data;
-using Twitchbot.Models.Data.Entities;
-using Twitchbot.Models.Domain.Models;
+using Twitchbot.Common.Base.Dao;
+using Twitchbot.Common.Models.Data;
+using Twitchbot.Common.Models.Data.Entities;
+using Twitchbot.Common.Models.Domain.Models;
 
-namespace Twitchbot.Authentication.Dao
+namespace Twitchbot.Services.Authentication.Dao
 {
     public class TwitchDao : BaseDao<Twitch, TwitchReadModel, TwitchCreateModel, TwitchUpdateModel>
     {
