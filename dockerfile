@@ -1,4 +1,5 @@
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
+LABEL org.opencontainers.image.source https://github.com/TwitchbotJyben/Twitchbot.Services.Authentication
 ARG NUGET_AUTH_TOKEN
 
 WORKDIR /src
