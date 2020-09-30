@@ -73,3 +73,16 @@ jobs:
 
           docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
+          
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    # checkout the repo
+    - name: 'Checkout Github Action'
+      uses: actions/checkout@v2
+
+    - uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'dev-twitchbot-services-authentication'
+        publish-profile: ${{ secrets.DEV_SERVICES_AUTHENTICATION_PUBLISH_PROFILE }}
+        images: 'ghcr.io/twitchbotjyben/dev-twitchbot-services-authentication:latest'
