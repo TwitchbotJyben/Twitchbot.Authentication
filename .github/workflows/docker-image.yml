@@ -15,4 +15,4 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build the Docker image
-      run: docker build . --build-arg NUGET_AUTH_TOKEN=${{ secrets.GITHUB_TOKEN }} --file dockerfile --tag Twitchbot.Services.Authentication:$(date +%s)
+      run: docker build . --build-arg NUGET_AUTH_TOKEN=${{ secrets.GITHUB_TOKEN }} --file dockerfile --tag twitchbot-services-authentication:$(date +%s)
