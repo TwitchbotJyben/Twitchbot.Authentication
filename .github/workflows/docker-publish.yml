@@ -1,4 +1,4 @@
-name: Docker
+name: Build image, push and deploy
 
 on:
   push:
@@ -75,6 +75,8 @@ jobs:
           docker push $IMAGE_ID:$VERSION
           
   deploy:
+    needs: push
+    
     runs-on: ubuntu-latest
     steps:
     # checkout the repo
