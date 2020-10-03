@@ -129,6 +129,7 @@ namespace Twitchbot.Services.Authentication.Business
         {
             var updateModel = new SpotifyUpdateModel
             {
+                Id = model.Id,
                 RefreshToken = model.RefreshToken,
                 Token = model.AccessToken,
                 UserId = userId,
@@ -204,8 +205,9 @@ namespace Twitchbot.Services.Authentication.Business
             {
                 var model = new AuthenticationModel()
                 {
+                    Id = spotify.Id,
                     AccessToken = resultOAuth.Model.AccessToken,
-                    RefreshToken = resultOAuth.Model.RefreshToken,
+                    RefreshToken = spotify.RefreshToken,
                     ExpiresIn = resultOAuth.Model.ExpiresIn,
                     Time = DateTime.Now
                 };
