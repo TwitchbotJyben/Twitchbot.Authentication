@@ -194,7 +194,7 @@ namespace Twitchbot.Services.Authentication.Business
 
         private static bool IsTokenValid(SpotifyReadModel spotify)
         {
-            return spotify.ExpiresIn.HasValue && spotify.Time < DateTime.Now.AddSeconds(spotify.ExpiresIn.Value);
+            return spotify.ExpiresIn.HasValue && spotify.Time > DateTime.Now.AddSeconds(spotify.ExpiresIn.Value);
         }
 
         private async Task RefreshToken(HttpResultModel<SpotifyModel> resultAuthentication, int userId, SpotifyReadModel spotify, CancellationToken cancellationToken)
