@@ -181,8 +181,7 @@ namespace Twitchbot.Services.Authentication.Business
                 {
                     new KeyValuePair<string, string>("refresh_token", token),
                     new KeyValuePair<string, string>("grant_type", "refresh_token"),
-                    new KeyValuePair<string, string>("client_id", _configuration["ApiParams:Spotify:ClientId"]),
-                    new KeyValuePair<string, string>("client_secret", _configuration["ApiParams:Spotify:SecretId"])
+                    new KeyValuePair<string, string>("client_id", _configuration["ApiParams:Spotify:ClientId"])
                 };
 
             var formUrlEncodedContent = new FormUrlEncodedContent(nvc);
