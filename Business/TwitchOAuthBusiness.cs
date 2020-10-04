@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -53,7 +54,7 @@ namespace Twitchbot.Services.Authentication.Business
                     {
                         AccessToken = resultOAuth.Model.AccessToken,
                         RefreshToken = resultOAuth.Model.RefreshToken,
-                        ClientId = resultValidate.Model.ClientId,
+                        ClientId = Guid.NewGuid().ToString(),
                         UserName = resultValidate.Model.Login
                     };
                     resultAuthentication.PerformResult(true, "", _localizer["Connexion réussie."], model);

@@ -51,7 +51,7 @@ namespace Twitchbot.Services.Authentication.Business
                     {
                         AccessToken = user.Token,
                         RefreshToken = user.RefreshToken,
-                        ClientId = resultValidate.Model.ClientId,
+                        ClientId = user.ClientId,
                         UserName = resultValidate.Model.Login
                     };
                     resultAuthentication.PerformResult(true, "", _localizer["Connexion réussie."], model);
@@ -68,7 +68,7 @@ namespace Twitchbot.Services.Authentication.Business
                             {
                                 AccessToken = resultRefresh.Model.AccessToken,
                                 RefreshToken = resultRefresh.Model.RefreshToken,
-                                ClientId = resultValidate.Model.ClientId,
+                                ClientId = user.ClientId,
                                 UserName = resultValidate.Model.Login
                             };
                             resultAuthentication.PerformResult(true, "", _localizer["Connexion réussie."], model);
