@@ -127,7 +127,7 @@ namespace Twitchbot.Services.Authentication.Business
             _logger.LogInformation("Validation du token {0}", token);
 
             var url = _configuration["ApiUrl:Twitch:ValidateToken"];
-            var headers = new Dictionary<string, string> { { "Authorization", token } };
+            var headers = new Dictionary<string, string> { { "OAuth", token } };
             var result = await _client.PerformRequest<TwitchValidateTokenModel>(url, HttpMethod.Get, null, headers);
 
             return result;
