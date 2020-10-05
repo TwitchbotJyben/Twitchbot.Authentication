@@ -214,7 +214,7 @@ namespace Twitchbot.Services.Authentication.Business
 
                 await UpdateSpotifyModel(spotify.Id, userId, model, cancellationToken);
 
-                resultAuthentication.PerformResult(true, "", _localizer["Informations de connexion Spotify récupérées."], new SpotifyModel() { Token = spotify.Token });
+                resultAuthentication.PerformResult(true, "", _localizer["Informations de connexion Spotify récupérées."], new SpotifyModel() { Token = resultOAuth.Model.AccessToken });
             }
             else
             {
