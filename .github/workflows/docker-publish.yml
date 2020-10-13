@@ -25,7 +25,7 @@ jobs:
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - name: Setup NuGet Sources
-        run: nuget sources add -Name "Github" -Source "https://nuget.pkg.github.com/twitchbotjyben/index.json" -UserName "Jyben" -Password "${{ secrets.GITHUB_TOKEN }}"
+        run: nuget sources add -Name "GithubTest" -Source "https://nuget.pkg.github.com/twitchbotjyben/index.json" -UserName "Jyben" -Password "${{ secrets.GITHUB_TOKEN }}"
         shell: cmd
       - name: Setup Nuget.exe
         uses: warrenbuckley/Setup-Nuget@v1
