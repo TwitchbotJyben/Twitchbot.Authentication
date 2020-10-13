@@ -3,24 +3,35 @@ name: .NET Core - Sonar
 on:
   workflow_dispatch:
 
+env:
+  APP_NAME: 'Twitchbot.Services.Authentication'
+
 jobs:
   build:
 
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - name: 'Checkout GitHub Action'
+      uses: actions/checkout@v2
       with:
         fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-    - name: Install NuGet client
-      uses: warrenbuckley/Setup-Nuget@v1
-    - name: restore package
-      run: |
-        nuget sources add -name "Github" -Source https://nuget.pkg.github.com/twitchbotjyben/index.json -StorePasswordInClearText -Username Jyben -Password ${env:Password}
-        dotnet restore Twitchbot.Services.Authentication.csproj
-      working-directory: src
+    
+    - name: 'Setup DotNet Environment'
+      uses: actions/setup-dotnet@v1
+      with:
+        source-url: https://nuget.pkg.github.com/twitchbotjyben/index.json
       env:
-        Password: ${{ secrets.GITHUB_TOKEN }}
+        NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        
+    - name: 'Resolve Project Dependencies Using Dotnet'
+      shell: pwsh
+      run: |
+        pushd './${{ env.APP_NAME }}'
+        dotnet build --output ./bin
+        dotnet build --configuration Release --output ./output
+        popd
+        
     - name: Cache SonarCloud packages
       uses: actions/cache@v1
       with:
