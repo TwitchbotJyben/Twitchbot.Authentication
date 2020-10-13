@@ -27,7 +27,7 @@ jobs:
     - name: 'Resolve Project Dependencies Using Dotnet'
       shell: pwsh
       run: |
-        pushd './${{ env.APP_NAME }}'
+        pushd './'
         dotnet build --output ./bin
         dotnet build --configuration Release --output ./output
         popd
