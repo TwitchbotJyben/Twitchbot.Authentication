@@ -1,4 +1,4 @@
-name: .NET Core - Build
+name: .NET Core - Sonar
 
 on:
   push:
