@@ -20,8 +20,7 @@ jobs:
     - name: Restore Nugets
       working-directory: src
       run: |
-        dotnet nuget add source https://api.nuget.org/v3/index.json -n nuget.org --configfile D:\a\Twitchbot.Services.Authentication\nuget.config
-        dotnet restore . --configfile D:\a\Twitchbot.Services.Authentication\nuget.config
+        dotnet restore . --configfile D:\a\Twitchbot.Services.Authentication\Twitchbot.Services.Authentication\nuget.config
     - name: Cache SonarCloud packages
       uses: actions/cache@v1
       with:
