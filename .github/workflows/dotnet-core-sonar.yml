@@ -18,7 +18,7 @@ jobs:
       run: |
         nuget sources add -name "Github" -Source https://nuget.pkg.github.com/twitchbotjyben/index.json -StorePasswordInClearText -Username Jyben -Password ${env:Password}
         dotnet restore Twitchbot.Services.Authentication.csproj
-      working-directory: Twitchbot.Services.Authentication
+      working-directory: src
       env:
         Password: ${{ secrets.GITHUB_TOKEN }}
     - name: Cache SonarCloud packages
