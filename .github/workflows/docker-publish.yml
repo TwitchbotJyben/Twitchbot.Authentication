@@ -19,14 +19,14 @@ env:
 jobs:
   build:
       name: Build
-      runs-on: windows-latest
+      runs-on: ubuntu-latest
       steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - name: Setup NuGet Sources
-        run: nuget sources add -Name "GithubTest" -Source "https://nuget.pkg.github.com/twitchbotjyben/index.json" -UserName "Jyben" -Password "${{ secrets.GITHUB_TOKEN }}"
-        shell: cmd
+        run: nuget sources add -Name "Github" -Source "https://nuget.pkg.github.com/twitchbotjyben/index.json" -UserName "Jyben" -Password "${{ secrets.GITHUB_TOKEN }}"
+        shell: bash
       - name: Setup Nuget.exe
         uses: warrenbuckley/Setup-Nuget@v1
       - name: Setup .NET Core
@@ -50,7 +50,7 @@ jobs:
           restore-keys: ${{ runner.os }}-sonar-scanner
       - name: Install SonarCloud scanner
         if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
-        shell: powershell
+        shell: bash
         run: |
           New-Item -Path .\.sonar\scanner -ItemType Directory
           dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
@@ -58,7 +58,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        shell: powershell
+        shell: bash
         run: |
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"TwitchbotJyben_Twitchbot.Services.Authentication" /o:"twitchbotjyben" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
           dotnet build --configuration Release --no-restore
