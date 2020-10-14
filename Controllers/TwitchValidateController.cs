@@ -22,7 +22,7 @@ namespace Twitchbot.Services.Authentication.Controllers
             _validateBusiness = validateBusiness;
         }
 
-        [HttpPost("/twitch/validate")]
+        [HttpPost("/twitch/validation")]
         public async Task<ActionResult<HttpResultModel<AuthenticationModel>>> Post(CancellationToken cancellationToken, string clientId)
         {
             _logger.LogDebug("Post validate authentication");
