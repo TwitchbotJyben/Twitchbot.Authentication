@@ -23,16 +23,16 @@ namespace Twitchbot.Services.Authentication.Controllers
         }
 
         [HttpPost("/twitch/validation")]
-        public async Task<ActionResult<HttpResultModel<AuthenticationModel>>> Post(CancellationToken cancellationToken, string clientId)
+        public async Task<ActionResult<HttpResultModel<AuthenticationModel>>> Post(string clientId, CancellationToken cancellationToken)
         {
             _logger.LogDebug("Post validate authentication");
 
-            var readModelList = await _validateBusiness.ReadTwitchModel(cancellationToken, clientId);
+            var readModelList = await _validateBusiness.ReadTwitchModel(clientId, cancellationToken).ConfigureAwait(false);
 
             if (!readModelList.Any())
                 return NotFound();
 
-            return await _validateBusiness.ValidateAuth(readModelList, cancellationToken);
+            return await _validateBusiness.ValidateAuth(readModelList, cancellationToken).ConfigureAwait(false);
         }
     }
 }

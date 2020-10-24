@@ -22,11 +22,11 @@ namespace Twitchbot.Services.Authentication.Controllers
         }
 
         [HttpPost("/twitch/oauth")]
-        public async Task<ActionResult<HttpResultModel<AuthenticationModel>>> Post(CancellationToken cancellationToken, string code)
+        public async Task<ActionResult<HttpResultModel<AuthenticationModel>>> Post(string code, CancellationToken cancellationToken)
         {
             _logger.LogDebug("Post oauth");
 
-            return await _oAuthBusiness.PostOAuth(code, cancellationToken);
+            return await _oAuthBusiness.PostOAuth(code, cancellationToken).ConfigureAwait(false);
         }
     }
 }

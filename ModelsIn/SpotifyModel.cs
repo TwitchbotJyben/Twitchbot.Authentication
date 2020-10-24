@@ -1,4 +1,4 @@
-namespace Twitchbot_Sample.Authentication.ModelsIn
+namespace Twitchbot.Services.Authentication.ModelsIn
 {
     public class SpotifyModel
     {

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using AutoMapper;
@@ -13,12 +14,14 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Twitchbot.Common.Base.Client;
+using Twitchbot.Common.Base.Interfaces;
 using Twitchbot.Common.Base.Middleware;
 using Twitchbot.Common.Models.Data;
 using Twitchbot.Common.Models.Domain.Mapping;
 using Twitchbot.Services.Authentication.Business;
 using Twitchbot.Services.Authentication.Controllers;
 using Twitchbot.Services.Authentication.Dao;
+using Twitchbot.Services.Authentication.Interfaces;
 
 namespace Twitchbot.Services.Authentication
 {
@@ -53,12 +56,15 @@ namespace Twitchbot.Services.Authentication
             services.AddLocalization(opts => { opts.ResourcesPath = "Resources"; });
 
             services.AddScoped<TwitchValidateController>();
-            services.AddScoped<TwitchValidateBusiness>();
-            services.AddScoped<TwitchOAuthController>();
-            services.AddScoped<TwitchOAuthBusiness>();
-            services.AddScoped<SpotifyOAuthBusiness>();
             services.AddScoped<SpotifyOAuthController>();
-            services.AddScoped<ClientBase>();
+            services.AddScoped<TwitchOAuthController>();
+
+            services.AddScoped<ITwitchValidateBusiness, TwitchValidateBusiness>();
+            services.AddScoped<ITwitchOAuthBusiness, TwitchOAuthBusiness>();
+            services.AddScoped<ISpotifyOAuthBusiness, SpotifyOAuthBusiness>();
+
+            services.AddScoped<IApiClient, ApiClient>();
+
             services.AddScoped<TwitchDao>();
             services.AddScoped<UsersDao>();
             services.AddScoped<SpotifyDao>();
@@ -90,8 +96,10 @@ namespace Twitchbot.Services.Authentication
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            if (app is null) throw new ArgumentNullException();
+
             app.UseMiddleware<RequestResponseLoggingMiddleware>();
 
             if (env.IsDevelopment())

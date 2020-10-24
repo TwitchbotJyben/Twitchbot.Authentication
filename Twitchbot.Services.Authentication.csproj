@@ -18,7 +18,11 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.4.1" />
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="5.4.1" />
-    <PackageReference Include="Twitchbot.Common.Base" Version="1.0.10" />
+    <PackageReference Include="Twitchbot.Common.Base" Version="1.0.12" />
     <PackageReference Include="Twitchbot.Common.Models" Version="1.0.9" />
+    <PackageReference Include="Microsoft.CodeQuality.Analyzers" Version="3.3.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
   </ItemGroup>
 </Project>

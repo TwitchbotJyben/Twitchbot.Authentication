@@ -3,9 +3,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Twitchbot.Common.Base.Models;
-using Twitchbot.Services.Authentication.Business;
+using Twitchbot.Services.Authentication.Interfaces;
 using Twitchbot.Services.Authentication.ModelsIn;
-using Twitchbot_Sample.Authentication.ModelsIn;
 
 namespace Twitchbot.Services.Authentication.Controllers
 {
@@ -13,29 +12,28 @@ namespace Twitchbot.Services.Authentication.Controllers
     public class SpotifyOAuthController : ControllerBase
     {
         private readonly ILogger<SpotifyOAuthController> _logger;
-        private readonly SpotifyOAuthBusiness _oAuthBusiness;
+        private readonly ISpotifyOAuthBusiness _oAuthBusiness;
 
-        public SpotifyOAuthController(ILogger<SpotifyOAuthController> logger,
-            SpotifyOAuthBusiness oAuthBusiness)
+        public SpotifyOAuthController(ILogger<SpotifyOAuthController> logger, ISpotifyOAuthBusiness oAuthBusiness)
         {
             _logger = logger;
             _oAuthBusiness = oAuthBusiness;
         }
 
         [HttpPost("/spotify/oauth")]
-        public async Task<ActionResult<HttpResultModel<AuthenticationModel>>> Post(CancellationToken cancellationToken, string code, string clientId)
+        public async Task<ActionResult<HttpResultModel<AuthenticationModel>>> Post(string code, string clientId, CancellationToken cancellationToken)
         {
             _logger.LogDebug("Post oauth");
 
-            return await _oAuthBusiness.PostOAuth(code, clientId, cancellationToken);
+            return await _oAuthBusiness.PostOAuth(code, clientId, cancellationToken).ConfigureAwait(false);
         }
 
         [HttpGet("/spotify/oauth")]
-        public async Task<ActionResult<HttpResultModel<SpotifyModel>>> Get(CancellationToken cancellationToken, string clientId)
+        public async Task<ActionResult<HttpResultModel<SpotifyModel>>> Get(string clientId, CancellationToken cancellationToken)
         {
             _logger.LogDebug("Get oauth");
 
-            return await _oAuthBusiness.GetOAuth(clientId, cancellationToken);
+            return await _oAuthBusiness.GetOAuth(clientId, cancellationToken).ConfigureAwait(false);
         }
     }
 }

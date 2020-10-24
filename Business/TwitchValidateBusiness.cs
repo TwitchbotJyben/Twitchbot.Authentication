@@ -6,18 +6,19 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
-using Twitchbot.Common.Base.Client;
+using Twitchbot.Common.Base.Interfaces;
 using Twitchbot.Common.Base.Models;
 using Twitchbot.Common.Models.Domain.Models;
 using Twitchbot.Services.Authentication.Dao;
+using Twitchbot.Services.Authentication.Interfaces;
 using Twitchbot.Services.Authentication.ModelsIn;
 using Twitchbot.Services.Authentication.ModelsOut;
 
 namespace Twitchbot.Services.Authentication.Business
 {
-    public class TwitchValidateBusiness
+    public class TwitchValidateBusiness : ITwitchValidateBusiness
     {
-        private readonly ClientBase _client;
+        private readonly IApiClient _client;
         private readonly IConfiguration _configuration;
         private readonly ILogger<TwitchValidateBusiness> _logger;
         private readonly string _clientId;
@@ -25,7 +26,7 @@ namespace Twitchbot.Services.Authentication.Business
         private readonly IStringLocalizer<TwitchValidateBusiness> _localizer;
         private readonly TwitchDao _twitchDao;
 
-        public TwitchValidateBusiness(IConfiguration configuration, ILogger<TwitchValidateBusiness> logger, ClientBase clientBase,
+        public TwitchValidateBusiness(IConfiguration configuration, ILogger<TwitchValidateBusiness> logger, IApiClient clientBase,
             IStringLocalizer<TwitchValidateBusiness> localizer, TwitchDao twitchDao)
         {
             _configuration = configuration;
@@ -37,14 +38,14 @@ namespace Twitchbot.Services.Authentication.Business
             _twitchDao = twitchDao;
         }
 
-        internal async Task<HttpResultModel<AuthenticationModel>> ValidateAuth(IReadOnlyList<TwitchReadModel> readModelList, CancellationToken cancellationToken)
+        public async Task<HttpResultModel<AuthenticationModel>> ValidateAuth(IReadOnlyList<TwitchReadModel> readModelList, CancellationToken cancellationToken)
         {
             var user = readModelList.First();
             var resultAuthentication = new HttpResultModel<AuthenticationModel>();
 
             if (user.ClientId != null && user.Token != null && user.RefreshToken != null)
             {
-                var resultValidate = await ValidateTwitchToken(user.Token);
+                var resultValidate = await ValidateTwitchToken(user.Token).ConfigureAwait(false);
                 if (resultValidate.Result)
                 {
                     var model = new AuthenticationModel
@@ -58,10 +59,10 @@ namespace Twitchbot.Services.Authentication.Business
                 }
                 else
                 {
-                    var resultRefresh = await RefreshTwitchToken(user.RefreshToken);
+                    var resultRefresh = await RefreshTwitchToken(user.RefreshToken).ConfigureAwait(false);
                     if (resultRefresh.Result)
                     {
-                        resultValidate = await ValidateTwitchToken(resultRefresh.Model.AccessToken);
+                        resultValidate = await ValidateTwitchToken(resultRefresh.Model.AccessToken).ConfigureAwait(false);
                         if (resultValidate.Result)
                         {
                             var model = new AuthenticationModel
@@ -87,10 +88,15 @@ namespace Twitchbot.Services.Authentication.Business
 
             if (resultAuthentication.Result && resultAuthentication.Model != null)
             {
-                await UpdateTwitchModel(user, resultAuthentication.Model, cancellationToken);
+                await UpdateTwitchModel(user, resultAuthentication.Model, cancellationToken).ConfigureAwait(false);
             }
 
             return resultAuthentication;
+        }
+
+        public async Task<IReadOnlyList<TwitchReadModel>> ReadTwitchModel(string clientId, CancellationToken cancellationToken)
+        {
+            return await _twitchDao.QueryModel(x => x.ClientId == clientId, cancellationToken).ConfigureAwait(false);
         }
 
         private async Task UpdateTwitchModel(TwitchReadModel user, AuthenticationModel authenticationModel, CancellationToken cancellationToken)
@@ -104,12 +110,7 @@ namespace Twitchbot.Services.Authentication.Business
                 UserId = user.UserId
             };
 
-            await _twitchDao.UpdateModel(user.Id, twitchUpdateModel, cancellationToken);
-        }
-
-        internal async Task<IReadOnlyList<TwitchReadModel>> ReadTwitchModel(CancellationToken cancellationToken, string clientId)
-        {
-            return await _twitchDao.QueryModel(x => x.ClientId == clientId, cancellationToken);
+            await _twitchDao.UpdateModel(user.Id, twitchUpdateModel, cancellationToken).ConfigureAwait(false);
         }
 
         private async Task<HttpResultModel<TwitchRefreshTokenModel>> RefreshTwitchToken(string refreshToken)
@@ -117,7 +118,7 @@ namespace Twitchbot.Services.Authentication.Business
             _logger.LogInformation("Refresh du token {0}", refreshToken);
 
             var url = _configuration["ApiUrl:Twitch:RefreshToken"].Replace("{refreshToken}", refreshToken).Replace("{clientId}", _clientId).Replace("{secretId}", _secretId);
-            var result = await _client.PerformRequest<TwitchRefreshTokenModel>(url, HttpMethod.Post);
+            var result = await _client.PerformRequest<TwitchRefreshTokenModel>(url, HttpMethod.Post).ConfigureAwait(false);
 
             return result;
         }
@@ -128,7 +129,7 @@ namespace Twitchbot.Services.Authentication.Business
 
             var url = _configuration["ApiUrl:Twitch:ValidateToken"];
             var headers = new Dictionary<string, string> { { "OAuth", token } };
-            var result = await _client.PerformRequest<TwitchValidateTokenModel>(url, HttpMethod.Get, null, headers);
+            var result = await _client.PerformRequest<TwitchValidateTokenModel>(url, HttpMethod.Get, null, headers).ConfigureAwait(false);
 
             return result;
         }

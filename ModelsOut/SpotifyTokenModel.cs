@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.Serialization;
 
 namespace Twitchbot.Services.Authentication.ModelsOut
@@ -12,7 +13,7 @@ namespace Twitchbot.Services.Authentication.ModelsOut
         public string Code { get; set; }
 
         [DataMember(Name = "redirect_uri")]
-        public string RedirectUri { get; set; }
+        public Uri RedirectUri { get; set; }
 
         [DataMember(Name = "client_id")]
         public string ClientId { get; set; }

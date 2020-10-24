@@ -8,26 +8,26 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
-using Twitchbot.Common.Base.Client;
+using Twitchbot.Common.Base.Interfaces;
 using Twitchbot.Common.Base.Models;
 using Twitchbot.Common.Models.Domain.Models;
 using Twitchbot.Services.Authentication.Dao;
+using Twitchbot.Services.Authentication.Interfaces;
 using Twitchbot.Services.Authentication.ModelsIn;
 using Twitchbot.Services.Authentication.ModelsOut;
-using Twitchbot_Sample.Authentication.ModelsIn;
 
 namespace Twitchbot.Services.Authentication.Business
 {
-    public class SpotifyOAuthBusiness
+    public class SpotifyOAuthBusiness : ISpotifyOAuthBusiness
     {
-        private readonly ClientBase _client;
+        private readonly IApiClient _client;
         private readonly IConfiguration _configuration;
         private readonly ILogger<SpotifyOAuthBusiness> _logger;
         private readonly IStringLocalizer<SpotifyOAuthBusiness> _localizer;
         private readonly SpotifyDao _spotifyDao;
         private readonly TwitchDao _twitchDao;
 
-        public SpotifyOAuthBusiness(IConfiguration configuration, ILogger<SpotifyOAuthBusiness> logger, ClientBase clientBase,
+        public SpotifyOAuthBusiness(IConfiguration configuration, ILogger<SpotifyOAuthBusiness> logger, IApiClient clientBase,
             IStringLocalizer<SpotifyOAuthBusiness> localizer, SpotifyDao spotifyDao, TwitchDao twitchDao)
         {
             _configuration = configuration;
@@ -38,15 +38,15 @@ namespace Twitchbot.Services.Authentication.Business
             _twitchDao = twitchDao;
         }
 
-        internal async Task<ActionResult<HttpResultModel<SpotifyModel>>> GetOAuth(string clientId, CancellationToken cancellationToken)
+        public async Task<ActionResult<HttpResultModel<SpotifyModel>>> GetOAuth(string clientId, CancellationToken cancellationToken)
         {
             var resultAuthentication = new HttpResultModel<SpotifyModel>();
-            var readTwitchModel = await _twitchDao.QueryModel(x => x.ClientId == clientId, cancellationToken);
-
+            var readTwitchModel = await _twitchDao.QueryModel(x => x.ClientId == clientId, cancellationToken).ConfigureAwait(false);
+            
             if (readTwitchModel.Any())
             {
                 var userId = readTwitchModel.First().UserId;
-                var readSpotifyModel = await ReadSpotifyModel(userId, cancellationToken);
+                var readSpotifyModel = await ReadSpotifyModel(userId, cancellationToken).ConfigureAwait(false);
 
                 if (readSpotifyModel.Any())
                 {
@@ -58,7 +58,7 @@ namespace Twitchbot.Services.Authentication.Business
                     }
                     else
                     {
-                        await RefreshToken(resultAuthentication, userId, spotify, cancellationToken);
+                        await RefreshToken(resultAuthentication, userId, spotify, cancellationToken).ConfigureAwait(false);
                     }
                 }
                 else
@@ -74,18 +74,18 @@ namespace Twitchbot.Services.Authentication.Business
             return resultAuthentication;
         }
 
-        internal async Task<HttpResultModel<AuthenticationModel>> PostOAuth(string code, string clientId, CancellationToken cancellationToken)
+        public async Task<HttpResultModel<AuthenticationModel>> PostOAuth(string code, string clientId, CancellationToken cancellationToken)
         {
             var resultAuthentication = new HttpResultModel<AuthenticationModel>();
 
-            var resultOAuth = await PostOAuth(code);
+            var resultOAuth = await PostOAuth(code).ConfigureAwait(false);
             if (!resultOAuth.Result)
             {
                 resultAuthentication.PerformResult(false, "", _localizer["Connexion impossible."], null);
                 return resultAuthentication;
             }
 
-            var readTwitchModel = await _twitchDao.QueryModel(x => x.ClientId == clientId, cancellationToken);
+            var readTwitchModel = await _twitchDao.QueryModel(x => x.ClientId == clientId, cancellationToken).ConfigureAwait(false);
             if (readTwitchModel.Any())
             {
                 var userId = readTwitchModel.First().UserId;
@@ -98,16 +98,16 @@ namespace Twitchbot.Services.Authentication.Business
                     Time = DateTime.Now
                 };
 
-                var readSpotifyModel = await ReadSpotifyModel(userId, cancellationToken);
+                var readSpotifyModel = await ReadSpotifyModel(userId, cancellationToken).ConfigureAwait(false);
 
                 if (readSpotifyModel.Any())
                 {
                     var spotify = readSpotifyModel.First();
-                    await UpdateSpotifyModel(spotify.Id, userId, model, cancellationToken);
+                    await UpdateSpotifyModel(spotify.Id, userId, model, cancellationToken).ConfigureAwait(false);
                 }
                 else
                 {
-                    await CreateSpotifyModel(userId, model, cancellationToken);
+                    await CreateSpotifyModel(userId, model, cancellationToken).ConfigureAwait(false);
                 }
 
                 resultAuthentication.PerformResult(true, "", _localizer["Connexion réussie."], model);
@@ -122,7 +122,7 @@ namespace Twitchbot.Services.Authentication.Business
 
         private async Task<IReadOnlyList<SpotifyReadModel>> ReadSpotifyModel(int userId, CancellationToken cancellationToken)
         {
-            return await _spotifyDao.QueryModel(x => x.UserId == userId, cancellationToken);
+            return await _spotifyDao.QueryModel(x => x.UserId == userId, cancellationToken).ConfigureAwait(false);
         }
 
         private async Task UpdateSpotifyModel(int id, int userId, AuthenticationModel model, CancellationToken cancellationToken)
@@ -137,7 +137,7 @@ namespace Twitchbot.Services.Authentication.Business
                 Time = model.Time
             };
 
-            await _spotifyDao.UpdateModel(id, updateModel, cancellationToken);
+            await _spotifyDao.UpdateModel(id, updateModel, cancellationToken).ConfigureAwait(false);
         }
 
         private async Task CreateSpotifyModel(int userId, AuthenticationModel authenticationModel, CancellationToken cancellationToken)
@@ -151,7 +151,7 @@ namespace Twitchbot.Services.Authentication.Business
                 Time = authenticationModel.Time
             };
 
-            await _spotifyDao.CreateModel(createModel, cancellationToken);
+            await _spotifyDao.CreateModel(createModel, cancellationToken).ConfigureAwait(false);
         }
 
         private async Task<HttpResultModel<SpotifyOAuthModel>> PostOAuth(string code)
@@ -169,7 +169,7 @@ namespace Twitchbot.Services.Authentication.Business
 
             var formUrlEncodedContent = new FormUrlEncodedContent(nvc);
             var url = _configuration["ApiUrl:Spotify:OAuth"];
-            var result = await _client.PerformRequest<SpotifyOAuthModel>(url, HttpMethod.Post, formUrlEncodedContent);
+            var result = await _client.PerformRequest<SpotifyOAuthModel>(url, HttpMethod.Post, formUrlEncodedContent).ConfigureAwait(false);
 
             return result;
         }
@@ -188,7 +188,7 @@ namespace Twitchbot.Services.Authentication.Business
 
             var formUrlEncodedContent = new FormUrlEncodedContent(nvc);
             var url = _configuration["ApiUrl:Spotify:OAuth"];
-            var result = await _client.PerformRequest<SpotifyOAuthModel>(url, HttpMethod.Post, formUrlEncodedContent);
+            var result = await _client.PerformRequest<SpotifyOAuthModel>(url, HttpMethod.Post, formUrlEncodedContent).ConfigureAwait(false);
 
             return result;
         }
@@ -200,7 +200,7 @@ namespace Twitchbot.Services.Authentication.Business
 
         private async Task RefreshToken(HttpResultModel<SpotifyModel> resultAuthentication, int userId, SpotifyReadModel spotify, CancellationToken cancellationToken)
         {
-            var resultOAuth = await PostRefreshOAuth(spotify.RefreshToken);
+            var resultOAuth = await PostRefreshOAuth(spotify.RefreshToken).ConfigureAwait(false);
             if (resultOAuth.Result)
             {
                 var model = new AuthenticationModel()
@@ -212,7 +212,7 @@ namespace Twitchbot.Services.Authentication.Business
                     Time = DateTime.Now
                 };
 
-                await UpdateSpotifyModel(spotify.Id, userId, model, cancellationToken);
+                await UpdateSpotifyModel(spotify.Id, userId, model, cancellationToken).ConfigureAwait(false);
 
                 resultAuthentication.PerformResult(true, "", _localizer["Informations de connexion Spotify récupérées."], new SpotifyModel() { Token = resultOAuth.Model.AccessToken });
             }
